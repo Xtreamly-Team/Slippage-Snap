@@ -1,0 +1,42 @@
+{
+  "name": "xtreamly_slippage_snap",
+  "version": "0.1.0",
+  "description": "Xtreamly slippage snap",
+  "repository": {
+    "url": "https://example.com",
+    "type": "git"
+  },
+  "license": "(MIT-0 OR Apache-2.0)",
+  "main": "src/index.ts",
+  "files": [
+    "dist/",
+    "images/",
+    "snap.manifest.json"
+  ],
+  "scripts": {
+    "build": "mm-snap build",
+    "clean": "rimraf dist",
+    "build:clean": "npm clean && npm build",
+    "build:start": "npm clean && npm build && npm serve",
+    "serve": "mm-snap serve -p 8090",
+    "start": "mm-snap watch"
+  },
+  "devDependencies": {
+    "@lavamoat/allow-scripts": "^2.0.3",
+    "@metamask/auto-changelog": "^2.6.0",
+    "@metamask/snaps-types": "^0.30.0",
+    "rimraf": "^3.0.2",
+    "typescript": "^4.7.4"
+  },
+  "engines": {
+    "node": ">=16.0.0"
+  },
+  "publishConfig": {
+    "access": "public",
+    "registry": "https://registry.npmjs.org/"
+  },
+  "dependencies": {
+    "@metamask/snaps-sdk": "^1.2.0",
+    "buffer": "^6.0.3"
+  }
+}

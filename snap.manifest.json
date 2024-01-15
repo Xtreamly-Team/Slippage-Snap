@@ -1,0 +1,36 @@
+{
+  "version": "0.0.1",
+  "description": "basic_snap",
+  "proposedName": "basic_snap",
+  "repository": {
+    "type": "git",
+    "url": "https://example.com"
+  },
+  "source": {
+    "shasum": "sK4+eD+VUqUUIcpTF/UKMaGqQ0ln5jdG6DholMFR1sI=",
+    "location": {
+      "npm": {
+        "filePath": "dist/bundle.js",
+        "iconPath": "images/icon.svg",
+        "packageName": "basic_snap",
+        "registry": "https://registry.npmjs.org/"
+      }
+    }
+  },
+  "initialPermissions": {
+    "snap_dialog": {},
+    "snap_notify": {},
+    "snap_manageState": {},
+    "endowment:rpc": {
+      "dapps": true,
+      "snaps": false
+    },
+    "endowment:ethereum-provider": {},
+    "endowment:page-home": {},
+    "endowment:network-access": {},
+    "endowment:transaction-insight": {
+      "allowTransactionOrigin": true
+    }
+  },
+  "manifestVersion": "0.1"
+}
