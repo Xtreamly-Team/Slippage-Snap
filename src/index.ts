@@ -1,3 +1,4 @@
+import { OnTransactionHandler } from '@metamask/snaps-types';
 import type { OnRpcRequestHandler } from '@metamask/snaps-sdk';
 // import { panel, text } from '@metamask/snaps-sdk';
 import {
@@ -9,6 +10,21 @@ import {
     text,
 } from "@metamask/snaps-sdk";
 
+
+export const onTransaction: OnTransactionHandler = async ({
+  transaction,
+  chainId,
+  transactionOrigin,
+}) => {
+  const insights = /* Get insights */;
+  return {
+    content: panel([
+      heading('My Transaction Insights'),
+      text('Here are the insights:'),
+      ...(insights.map((insight) => text(insight.value)))
+    ])
+  };
+};
 
 /**
  * Handle incoming JSON-RPC requests, sent through `wallet_invokeSnap`.
