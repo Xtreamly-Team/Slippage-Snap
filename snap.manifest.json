@@ -1,5 +1,5 @@
 {
-  "version": "0.0.1",
+  "version": "0.1.0",
   "description": "basic_snap",
   "proposedName": "basic_snap",
   "repository": {
@@ -7,12 +7,12 @@
     "url": "https://example.com"
   },
   "source": {
-    "shasum": "sK4+eD+VUqUUIcpTF/UKMaGqQ0ln5jdG6DholMFR1sI=",
+    "shasum": "DNfv5m5DGiMQHdr7uPDba/RGreCEeD40/0k4T62simc=",
     "location": {
       "npm": {
         "filePath": "dist/bundle.js",
         "iconPath": "images/icon.svg",
-        "packageName": "basic_snap",
+        "packageName": "xtreamly_slippage_snap",
         "registry": "https://registry.npmjs.org/"
       }
     }

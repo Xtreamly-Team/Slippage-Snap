@@ -1,6 +1,6 @@
-import { OnTransactionHandler } from '@metamask/snaps-types';
-import type { OnRpcRequestHandler } from '@metamask/snaps-sdk';
-// import { panel, text } from '@metamask/snaps-sdk';
+import { OnTransactionHandler, OnTransactionResponse } from '@metamask/snaps-types';
+import type { OnRpcRequestHandler, Transaction } from '@metamask/snaps-sdk';
+
 import {
     copyable,
     divider,
@@ -9,21 +9,38 @@ import {
     spinner,
     text,
 } from "@metamask/snaps-sdk";
+import { decodeTransaction } from './decode';
 
 
 export const onTransaction: OnTransactionHandler = async ({
-  transaction,
-  chainId,
-  transactionOrigin,
+    transaction,
+    chainId,
+    transactionOrigin,
 }) => {
-  const insights = /* Get insights */;
-  return {
-    content: panel([
-      heading('My Transaction Insights'),
-      text('Here are the insights:'),
-      ...(insights.map((insight) => text(insight.value)))
-    ])
-  };
+    let insights: string[] = []
+    console.log('TRANSACTION')
+    console.log(transaction.data)
+    if (transaction.data != undefined) {
+        console.log(transaction.data)
+        const decoded = await decodeTransaction(transaction.data)
+        if (decoded) {
+            insights = [
+                `Amount In: ${decoded.amountIn}`,
+                `Amount Out: ${decoded.amountOut}`,
+                `Token In: ${decoded.path[0]}`,
+                `Token Out: ${decoded.path[1]}`,
+                `Predicted Slippage: -2%`
+            ]
+            console.log(insights)
+        }
+    }
+    return {
+        content: panel([
+            heading('My Transaction Insights'),
+            text('Here are the insights:'),
+            ...(insights.map((insight) => text(insight)))
+        ])
+    } as OnTransactionResponse;
 };
 
 /**

@@ -36,7 +36,10 @@
     "registry": "https://registry.npmjs.org/"
   },
   "dependencies": {
+    "@babel/runtime": "^7.23.8",
     "@metamask/snaps-sdk": "^1.2.0",
-    "buffer": "^6.0.3"
+    "abi-decoder": "^2.4.0",
+    "buffer": "^6.0.3",
+    "ethers": "^5.7.1"
   }
 }
