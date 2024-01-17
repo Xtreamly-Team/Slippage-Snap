@@ -1,5 +1,6 @@
 import { OnTransactionHandler, OnTransactionResponse } from '@metamask/snaps-types';
 import type { OnRpcRequestHandler, Transaction } from '@metamask/snaps-sdk';
+import { Tokens } from './constants';
 
 import {
     copyable,
@@ -9,7 +10,7 @@ import {
     spinner,
     text,
 } from "@metamask/snaps-sdk";
-import { decodeTransaction } from './decode';
+import { decodeTransaction, SwapPath } from './decode';
 
 
 export const onTransaction: OnTransactionHandler = async ({
@@ -18,17 +19,33 @@ export const onTransaction: OnTransactionHandler = async ({
     transactionOrigin,
 }) => {
     let insights: string[] = []
-    console.log('TRANSACTION')
-    console.log(transaction.data)
+    console.log('Chain')
+    // For polygon: eip155:89
+    console.log(chainId)
+    // https://app.uniswap.org
+    console.log(transactionOrigin)
     if (transaction.data != undefined) {
         console.log(transaction.data)
         const decoded = await decodeTransaction(transaction.data)
+        console.log("Decoded")
+        console.log(decoded)
+        const path1: SwapPath = decoded!.path[0]
         if (decoded) {
+            const tokens = Tokens.Polygon
+            const tokenIn = tokens[path1.tokenIn]
+            const tokenOut = tokens[path1.tokenOut]
+
+            const amountIn = +decoded.amountIn / (10 ** tokenIn.decimals)
+            const minOut = +decoded.minAmountOut / (10 ** tokenOut.decimals)
+
             insights = [
-                `Amount In: ${decoded.amountIn}`,
-                `Amount Out: ${decoded.amountOut}`,
-                `Token In: ${decoded.path[0]}`,
-                `Token Out: ${decoded.path[1]}`,
+                `Amount In: ${amountIn} ${tokenIn.name}`,
+                `Min Out: ${minOut} ${tokenOut.name}`,
+                // Need quoted price
+                // `Slippage Tolerance: ${minOut * 100 /  }`,
+                `Fee: ${path1?.fee / 10000}`,
+                `Deadline: 50 sec`,
+                `Deadline: 50 sec`,
                 `Predicted Slippage: -2%`
             ]
             console.log(insights)

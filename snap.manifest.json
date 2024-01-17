@@ -1,13 +1,13 @@
 {
   "version": "0.1.0",
-  "description": "basic_snap",
-  "proposedName": "basic_snap",
+  "description": "Slippage Optimizer",
+  "proposedName": "Slippage Optimizer",
   "repository": {
     "type": "git",
     "url": "https://example.com"
   },
   "source": {
-    "shasum": "DNfv5m5DGiMQHdr7uPDba/RGreCEeD40/0k4T62simc=",
+    "shasum": "Y3F5wywUmWxGcNCcurRuoYH33xNCKT9NP1xlUwB5eS8=",
     "location": {
       "npm": {
         "filePath": "dist/bundle.js",

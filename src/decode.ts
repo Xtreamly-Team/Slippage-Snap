@@ -1,5 +1,30 @@
+// TODO: Fix V2 decoding
 import { Interface, AbiCoder } from "ethers/lib/utils";
 import PolygonRouter from './PolygonRouter.json'
+
+
+export class SwapPath {
+    constructor(
+        public tokenIn: string,
+        public tokenOut: string,
+        public fee: number 
+    ) {
+    }
+}
+
+export class DecodedUniswapTransaction {
+    constructor(
+        public functionName: string,
+        public recipient: string,
+        public amountIn: string,
+        public minAmountOut: string,
+        public path: SwapPath[],
+        public payerIsUser: boolean,
+        public exactIn: boolean,
+    ) {
+    }
+}
+
 
 
 const swapCodes = {
@@ -17,7 +42,8 @@ const v2VersionDictionary = {
 const decoder = new Interface(PolygonRouter)
 
 export async function decodeTransaction(rawData: string) {
-    // const decoded = decoder.parseTransaction({data: rawData})
+    const rawDecoded = decoder.parseTransaction({ data: rawData })
+    console.log(rawDecoded.args)
     const decoded = decodeExecute(rawData)
     console.log(decoded)
     return decoded
@@ -66,22 +92,15 @@ export async function decodeTransaction(rawData: string) {
 // }
 //
 
-class DecodedUniswapTransaction {
-    constructor(
-        public functionName: string,
-        public recipient: string,
-        public amountIn: string,
-        public amountOut: string,
-        public path: string[],
-        public payerIsUser: boolean,
-    ) {
-    }
-}
 
 function decodeExecute(transactionInput: string): DecodedUniswapTransaction | null {
     const parsedTx = decoder.parseTransaction({ data: transactionInput });
 
     let commandsSplit = parsedTx.args[0].substring(2).match(/.{1,2}/g);
+
+    console.log('Command Split')
+
+    console.log(commandsSplit)
 
     const abiCoder = new AbiCoder();
 
@@ -105,22 +124,29 @@ function decodeExecute(transactionInput: string): DecodedUniswapTransaction | nu
     switch (swapCodes[foundFunction]) {
         case "V3_SWAP_EXACT_IN": //"exactInput" FNC 11
             decoded = abiCoder.decode(["address", "uint256", "uint256", "bytes", "bool"], inputForFunction);
+            console.log("Decoded V3 Swap")
+            console.log(decoded)
+            let decodedPath = extractPathAndFeesFromV3(decoded[3])
             return new DecodedUniswapTransaction(
                 swapCodes[foundFunction],
                 decoded[0],
                 decoded[1].toString(),
                 decoded[2].toString(),
-                extractPathFromV3(decoded[3]),
-                decoded[4]
+                decodedPath,
+                decoded[4],
+                true
             )
         case "V3_SWAP_EXACT_OUT": //exactOutputSingle FNC 9
             decoded = abiCoder.decode(["address", "uint256", "uint256", "bytes", "bool"], inputForFunction);
-            return new DecodedUniswapTransaction(swapCodes[foundFunction],
+            decodedPath = extractPathAndFeesFromV3(decoded[3], true)
+            return new DecodedUniswapTransaction(
+                swapCodes[foundFunction],
                 decoded[0],
                 decoded[2].toString(),
                 decoded[1].toString(),
-                extractPathFromV3(decoded[3], true), // because exact output swaps are executed in reverse order, in this case tokenOut is actually tokenIn
-                decoded[4]
+                decodedPath, // because exact output swaps are executed in reverse order, in this case tokenOut is actually tokenIn
+                decoded[4],
+                false
             )
         case "V2_SWAP_EXACT_IN":
             decoded = abiCoder.decode(["address", "uint256", "uint256", "address[]", "bool"], inputForFunction);
@@ -129,7 +155,8 @@ function decodeExecute(transactionInput: string): DecodedUniswapTransaction | nu
                 decoded[1].toString(),
                 decoded[2].toString(),
                 decoded[3],
-                decoded[4]
+                decoded[4],
+                true
             )
         case "V2_SWAP_EXACT_OUT":
             decoded = abiCoder.decode(["address", "uint256", "uint256", "address[]", "bool"], inputForFunction);
@@ -138,7 +165,8 @@ function decodeExecute(transactionInput: string): DecodedUniswapTransaction | nu
                 decoded[2].toString(),
                 decoded[1].toString(),
                 decoded[3],
-                decoded[4]
+                decoded[4],
+                false
             )
         default:
             console.info("No parseable execute function found in input.")
@@ -146,17 +174,30 @@ function decodeExecute(transactionInput: string): DecodedUniswapTransaction | nu
     }
 }
 
-function extractPathFromV3(fullPath: string, reverse = false): string[] {
+function extractPathAndFeesFromV3(fullPath: string, reverse = false): SwapPath[] {
     const fullPathWithoutHexSymbol = fullPath.substring(2);
-    let path = [];
+    let path: SwapPath[] = [];
     let currentAddress = "";
+    let tokenSteps: string[] = [];
+    let fees: number[] = [];
+
     for (let i = 0; i < fullPathWithoutHexSymbol.length; i++) {
-        currentAddress += fullPathWithoutHexSymbol[i];
-        if (currentAddress.length === 40) {
-            path.push('0x' + currentAddress);
-            i = i + 6;
-            currentAddress = "";
+        const start = i * 46;
+        const addressEnd = start + 40;
+        currentAddress = `0x${fullPathWithoutHexSymbol.slice(start, addressEnd)}`
+        tokenSteps.push(currentAddress);
+        if (addressEnd == fullPathWithoutHexSymbol.length) {
+            break
         }
+        const tokenEnd = addressEnd + 6;
+        const currentFeeHex = fullPathWithoutHexSymbol.slice(addressEnd, tokenEnd)
+        // Hex to decimal
+        const currentFee = currentFeeHex ? parseInt(currentFeeHex, 16) : 0
+        fees.push(currentFee);
+    }
+
+    for (let i = 0; i < tokenSteps.length - 1; i++) {
+        path.push(new SwapPath(tokenSteps[i], tokenSteps[i + 1], fees[i]))
     }
     if (reverse) {
         return path.reverse();
