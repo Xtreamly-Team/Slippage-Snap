@@ -7,7 +7,7 @@
     "url": "https://example.com"
   },
   "source": {
-    "shasum": "Y3F5wywUmWxGcNCcurRuoYH33xNCKT9NP1xlUwB5eS8=",
+    "shasum": "s69ZPt2T+HClBVIWjTkk47NhThacm4tOcs6KI9tjYos=",
     "location": {
       "npm": {
         "filePath": "dist/bundle.js",
