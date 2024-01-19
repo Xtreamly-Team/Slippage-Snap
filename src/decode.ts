@@ -41,10 +41,6 @@ const v2VersionDictionary = {
 const decoder = new Interface(PolygonRouter)
 
 export async function decodeTransaction(rawData: string) {
-    // const rawDecoded = decoder.parseTransaction({ data: rawData })
-    // console.log("RAW")
-    // // console.log(rawDecoded)
-    // console.log(rawDecoded.args[2])
     const decoded = decodeExecute(rawData)
     return decoded
 }
@@ -54,13 +50,8 @@ function decodeExecute(transactionInput: string): DecodedUniswapTransaction | nu
     const parsedTx = decoder.parseTransaction({ data: transactionInput });
     const deadlineEpoch = parseInt(parsedTx.args[2])
     const deadlineDate = new Date(deadlineEpoch * 1000)
-    console.log(deadlineDate)
 
     let commandsSplit = parsedTx.args[0].substring(2).match(/.{1,2}/g);
-
-    console.log('Command Split')
-
-    console.log(commandsSplit)
 
     const abiCoder = new AbiCoder();
 
@@ -84,8 +75,6 @@ function decodeExecute(transactionInput: string): DecodedUniswapTransaction | nu
     switch (swapCodes[foundFunction]) {
         case "V3_SWAP_EXACT_IN": //"exactInput" FNC 11
             decoded = abiCoder.decode(["address", "uint256", "uint256", "bytes", "bool"], inputForFunction);
-            console.log("Decoded V3 Swap")
-            console.log(decoded)
             let decodedPath = extractPathAndFeesFromV3(decoded[3])
             return new DecodedUniswapTransaction(
                 swapCodes[foundFunction],

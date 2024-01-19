@@ -4,7 +4,9 @@ const generateTokenBaseUrl = `${baseUrl}/Authentication/GenerateToken`
 
 const slippagePredictBaseUrl = `${baseUrl}/Slippage`
 
-async function predictSlippage(amountIn: number, gasPrice: number, isBuy: boolean, poolAddress: string, fee: number) {
+export async function predictSlippage(amountIn: number, gasPrice: number, isBuy: boolean, poolAddress: string, fee: number): Promise<number> {
+
+    return 200;
     const authResRaw = await fetch(generateTokenBaseUrl)
 
     const authValue = (await authResRaw.json())['token']
