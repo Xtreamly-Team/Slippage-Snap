@@ -22,7 +22,9 @@ export const onTransaction: OnTransactionHandler = async ({
     console.log(chainId)
     // https://app.uniswap.org
     console.log(transactionOrigin)
-    if (transactionOrigin == 'https://app.uniswap.org' && transaction.data != undefined) {
+    if (
+        // transactionOrigin == 'https://app.uniswap.org' && 
+            transaction.data != undefined) {
         const decoded = await decodeTransaction(transaction.data)
         const path1: SwapPath = decoded!.path[0]
         // Currently we assume all swaps have only one path. Will add support for multihop swaps later
