@@ -73,7 +73,7 @@ function decodeExecute(transactionInput: string): DecodedUniswapTransaction | nu
 
     let decoded;
     switch (swapCodes[foundFunction]) {
-        case "V3_SWAP_EXACT_IN": //"exactInput" FNC 11
+        case "V3_SWAP_EXACT_IN":
             decoded = abiCoder.decode(["address", "uint256", "uint256", "bytes", "bool"], inputForFunction);
             let decodedPath = extractPathAndFeesFromV3(decoded[3])
             return new DecodedUniswapTransaction(

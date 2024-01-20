@@ -1,6 +1,5 @@
 import { OnTransactionHandler, OnTransactionResponse } from '@metamask/snaps-types';
-import type { OnRpcRequestHandler, Transaction } from '@metamask/snaps-sdk';
-import { SupportedTokensETH, SupportedTokensPolygon, WETH_TOKEN_ETH, USDT_TOKEN_ETH } from './constants';
+import { SupportedTokensETH, WETH_TOKEN_ETH, USDT_TOKEN_ETH } from './constants';
 
 import {
     copyable,
@@ -11,9 +10,7 @@ import {
     text,
 } from "@metamask/snaps-sdk";
 import { decodeTransaction, SwapPath } from './decode';
-import { getQuote } from './quote';
-import { predictSlippage } from './slippage_prediction';
-
+import { getQuote, predictSlippage } from './server';
 
 export const onTransaction: OnTransactionHandler = async ({
     transaction,
@@ -40,27 +37,29 @@ export const onTransaction: OnTransactionHandler = async ({
 
             const minOut = +decoded.minAmountOut / (10 ** tokenOut!.decimals)
 
-            let { quotedPrice, poolAddress, gasPrice } = await getQuote(
+            const [{ quotedPrice, poolAddress, _ }, predictedSlippage] = await Promise.all([
+                getQuote(
                 tokenIn?.address,
                 tokenOut?.address,
                 amountIn,
                 tokenIn?.decimals,
                 tokenOut?.decimals,
-                path1?.fee
-            )
+                path1?.fee),
+                predictSlippage(
+                tokenIn?.address,
+                tokenOut?.address,
+                amountIn,
+                tokenIn?.decimals,
+                tokenOut?.decimals,
+                tokenIn?.address == USDT_TOKEN_ETH.address,
+                path1.fee)
+            ])
 
             // NOTE: This is adjusted for the 0.15% that uniswap interface gets
             let quotedPriceAdjusted = quotedPrice * 0.9985
 
             const slippageTolerance = Math.round(((quotedPriceAdjusted - minOut) / quotedPriceAdjusted) * 100)
 
-            const predictedSlippage = await predictSlippage(
-                amountIn,
-                gasPrice,
-                tokenIn?.address == USDT_TOKEN_ETH.address,
-                poolAddress,
-                path1.fee
-            )
 
             insights = [
                 `Amount In: ${amountIn} ${tokenIn!.name}`,
@@ -68,7 +67,6 @@ export const onTransaction: OnTransactionHandler = async ({
                 `Min Out: ${minOut.toFixed(4)} ${tokenOut!.name}`,
                 `Slippage Tolerance: ${slippageTolerance}%`,
                 `Fee: ${path1?.fee / 10000}%`,
-                `Gas Price: ${gasPrice}`,
                 `Pool: ${poolAddress}`,
                 `Deadline: ${decoded.deadline}`,
             ]
@@ -78,7 +76,7 @@ export const onTransaction: OnTransactionHandler = async ({
                     ...(insights.map((insight) => text(insight))),
                     panel([
                         heading('Slippage'),
-                        text(`Predicted: ${(predictedSlippage / 100).toFixed(2)}%`)
+                        text(`Predicted: ${(predictedSlippage).toFixed(2)}%`)
                     ])
                 ])
             } as OnTransactionResponse;

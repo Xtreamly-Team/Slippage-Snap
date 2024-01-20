@@ -1,8 +1,12 @@
 import { ChainId, Token } from '@uniswap/sdk-core'
 
-export const QuotePriceAPIUrl = 'https://iwnyg07w4i.execute-api.eu-west-2.amazonaws.com/Beta'
+export const ServerUrl = 'https://oxa9vb5nr0.execute-api.eu-west-2.amazonaws.com/Beta'
 
-export const QuotedPriceAPIBetaKey = 'cuFEKivlz43rlU3zeXhKT928U29N4DTV7AFyt2di'
+export const QuotePriceAPIUrl = `${ServerUrl}/quoted_price_gas_fee_pool_address`
+
+export const PredictSlippageAPIUrl = `${ServerUrl}/predict_slippage`
+
+export const PublicTestAPIBetaKey = 'lKFdfPEe3xaW5nq1rPNMNaQtrI0ffTmIUhU6SMAa'
 
 export const RpcNodeUrl = 'https://nd-hrmrouztdfhwnmw5pn255q3i7a.t.ethereum.managedblockchain.eu-west-2.amazonaws.com?billingtoken=nVBr2VZ5akyj5lRHEOGxobat73ULeOZbm7nBagveIH'
 
