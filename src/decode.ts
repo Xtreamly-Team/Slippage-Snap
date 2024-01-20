@@ -1,6 +1,6 @@
 // TODO: Fix V2 decoding
 import { Interface, AbiCoder } from "ethers/lib/utils";
-import PolygonRouter from './PolygonRouter.json'
+import UniswapRouter from './UniswapRouter.json'
 
 
 export class SwapPath {
@@ -38,7 +38,7 @@ const v2VersionDictionary = {
     "swapETHForExactTokens": ["V3_SWAP_EXACT_OUT", "V2_SWAP_EXACT_OUT"]
 }
 
-const decoder = new Interface(PolygonRouter)
+const decoder = new Interface(UniswapRouter)
 
 export async function decodeTransaction(rawData: string) {
     const decoded = decodeExecute(rawData)
