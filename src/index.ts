@@ -24,7 +24,7 @@ export const onTransaction: OnTransactionHandler = async ({
     console.log(transactionOrigin)
     if (
         // transactionOrigin == 'https://app.uniswap.org' && 
-            transaction.data != undefined) {
+        transaction.data != undefined) {
         const decoded = await decodeTransaction(transaction.data)
         const path1: SwapPath = decoded!.path[0]
         // Currently we assume all swaps have only one path. Will add support for multihop swaps later
@@ -41,20 +41,20 @@ export const onTransaction: OnTransactionHandler = async ({
 
             const [{ quotedPrice, poolAddress, _ }, predictedSlippage] = await Promise.all([
                 getQuote(
-                tokenIn?.address,
-                tokenOut?.address,
-                amountIn,
-                tokenIn?.decimals,
-                tokenOut?.decimals,
-                path1?.fee),
+                    tokenIn?.address,
+                    tokenOut?.address,
+                    amountIn,
+                    tokenIn?.decimals,
+                    tokenOut?.decimals,
+                    path1?.fee),
                 predictSlippage(
-                tokenIn?.address,
-                tokenOut?.address,
-                amountIn,
-                tokenIn?.decimals,
-                tokenOut?.decimals,
-                tokenIn?.address == USDT_TOKEN_ETH.address,
-                path1.fee)
+                    tokenIn?.address,
+                    tokenOut?.address,
+                    amountIn,
+                    tokenIn?.decimals,
+                    tokenOut?.decimals,
+                    tokenIn?.address == USDT_TOKEN_ETH.address,
+                    path1.fee)
             ])
 
             // NOTE: This is adjusted for the 0.15% that uniswap interface gets
@@ -78,7 +78,7 @@ export const onTransaction: OnTransactionHandler = async ({
                     ...(insights.map((insight) => text(insight))),
                     panel([
                         heading('Slippage'),
-                        text(`Predicted: ${(predictedSlippage).toFixed(2)}%`)
+                        text(`Predicted: ${predictedSlippage.toFixed(2)}%`)
                     ])
                 ])
             } as OnTransactionResponse;
