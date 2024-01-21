@@ -1,4 +1,5 @@
 import { OnTransactionHandler, OnTransactionResponse } from '@metamask/snaps-types';
+import type { OnHomePageHandler } from '@metamask/snaps-sdk';
 import { SupportedTokensETH, WETH_TOKEN_ETH, USDT_TOKEN_ETH } from './constants';
 
 import {
@@ -89,4 +90,14 @@ export const onTransaction: OnTransactionHandler = async ({
             heading('Transaction not supported')
         ])
     } as OnTransactionResponse;
+};
+
+
+export const onHomePage: OnHomePageHandler = async () => {
+  return {
+    content: panel([
+      heading('Xtreamly Slippage Predictor'),
+      text('Provides insights and predicts slippage amount on DeX swaps. Currently works on ETH/USDT pair and on Uniswap'),
+    ]),
+  };
 };
