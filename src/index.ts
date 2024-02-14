@@ -1,5 +1,5 @@
 import { OnTransactionHandler, OnTransactionResponse } from '@metamask/snaps-types';
-import type { OnHomePageHandler } from '@metamask/snaps-sdk';
+import type { OnHomePageHandler, OnInstallHandler } from '@metamask/snaps-sdk';
 import { SupportedTokensETH, WETH_TOKEN_ETH, USDT_TOKEN_ETH } from './constants';
 
 import {
@@ -97,7 +97,31 @@ export const onHomePage: OnHomePageHandler = async () => {
   return {
     content: panel([
       heading('Xtreamly Slippage Predictor'),
-      text('Provides insights and predicts slippage amount on DeX swaps. Currently works on ETH/USDT pair and on Uniswap'),
+      text('Provides insights and predicts slippage amount on DeX swaps. Currently works on ETH/USDT and ETH/USDC pairs and on Uniswap V3'),
     ]),
   };
 };
+
+export const onInstall: OnInstallHandler = async () => {
+  return {
+    content: panel([
+      heading('Xtreamly Slippage Predictor'),
+      text('Provides insights and predicts slippage amount on DeX swaps. Currently works on ETH/USDT and ETH/USDC pair and on Uniswap'),
+      divider(),
+      heading('Starting Guide'),
+      text('Head to following link for more info:'),
+      copyable('https://info.xtreamly.io')
+    ]),
+  };
+}
+
+
+export const onUpdate: OnInstallHandler = async () => {
+  return {
+    content: panel([
+      heading('Updated'),
+      text('Head to following link for more info about the update:'),
+      copyable('https://info.xtreamly.io')
+    ]),
+  };
+}
