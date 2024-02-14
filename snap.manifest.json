@@ -1,5 +1,5 @@
 {
-  "version": "1.0.3",
+  "version": "1.0.6",
   "description": "Provides insights and predicts slippage amount on DeX swaps. Currently works on ETH/USDT pair and on Uniswap",
   "proposedName": "Xtreamly Slippage Predictor",
   "repository": {
@@ -7,7 +7,7 @@
     "type": "git"
   },
   "source": {
-    "shasum": "vTzkB0C28gEzBOrREe92biNHUXhw/Vus6UYYGpl6ALc=",
+    "shasum": "E06xBjbpFnRG4ZUS6GkRKjiHsDHp/YTE1/ErO3x90ak=",
     "location": {
       "npm": {
         "filePath": "dist/bundle.js",
@@ -22,9 +22,11 @@
     "snap_manageState": {},
     "endowment:rpc": {
       "dapps": true,
-      "snaps": false
+      "snaps": true
     },
+    "snap_dialog": {},
     "endowment:page-home": {},
+    "endowment:lifecycle-hooks": {},
     "endowment:network-access": {},
     "endowment:transaction-insight": {
       "allowTransactionOrigin": true

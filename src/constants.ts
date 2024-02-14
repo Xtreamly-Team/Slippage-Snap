@@ -1,6 +1,6 @@
 import { ChainId, Token } from '@uniswap/sdk-core'
 
-export const ServerUrl = 'https://oxa9vb5nr0.execute-api.eu-west-2.amazonaws.com/Beta'
+export const ServerUrl = 'https://api.xtreamly.io'
 
 export const QuotePriceAPIUrl = `${ServerUrl}/quoted_price_gas_fee_pool_address`
 

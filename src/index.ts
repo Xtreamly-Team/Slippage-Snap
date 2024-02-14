@@ -1,5 +1,5 @@
 import { OnTransactionHandler, OnTransactionResponse } from '@metamask/snaps-types';
-import type { OnHomePageHandler, OnInstallHandler } from '@metamask/snaps-sdk';
+import type { OnHomePageHandler, OnInstallHandler, OnUpdateHandler } from '@metamask/snaps-sdk';
 import { SupportedTokensETH, WETH_TOKEN_ETH, USDT_TOKEN_ETH } from './constants';
 
 import {
@@ -94,34 +94,45 @@ export const onTransaction: OnTransactionHandler = async ({
 
 
 export const onHomePage: OnHomePageHandler = async () => {
-  return {
-    content: panel([
-      heading('Xtreamly Slippage Predictor'),
-      text('Provides insights and predicts slippage amount on DeX swaps. Currently works on ETH/USDT and ETH/USDC pairs and on Uniswap V3'),
-    ]),
-  };
+    return {
+        content: panel([
+            heading('Xtreamly Slippage Predictor'),
+            text('Provides insights and predicts slippage amount on DeX swaps. Currently works on ETH/USDT and ETH/USDC pairs and on Uniswap V3'),
+        ]),
+    };
 };
 
 export const onInstall: OnInstallHandler = async () => {
-  return {
-    content: panel([
-      heading('Xtreamly Slippage Predictor'),
-      text('Provides insights and predicts slippage amount on DeX swaps. Currently works on ETH/USDT and ETH/USDC pair and on Uniswap'),
-      divider(),
-      heading('Starting Guide'),
-      text('Head to following link for more info:'),
-      copyable('https://info.xtreamly.io')
-    ]),
-  };
+    console.log("ON INSTALL")
+    return snap.request({
+        method: 'snap_dialog',
+        params: {
+            type: 'alert',
+            content: panel([
+                heading('Thanks for installing Xtreamly Slippage Predictor'),
+                text('Xtreamly slippage predictor provides insights and predicts slippage amount on DeX swaps. Currently works on ETH/USDT and ETH/USDC pair and on Uniswap v3'),
+                divider(),
+                heading('Starting Guide'),
+                text('Head to following link for more info:'),
+                copyable('https://info.xtreamly.io'),
+                text('You can test using any uniswap v3 interface'),
+                copyable('https://app.uniswap.org/swap')
+            ]),
+        }
+    });
 }
 
 
-export const onUpdate: OnInstallHandler = async () => {
-  return {
-    content: panel([
-      heading('Updated'),
-      text('Head to following link for more info about the update:'),
-      copyable('https://info.xtreamly.io')
-    ]),
-  };
+export const onUpdate: OnUpdateHandler = async () => {
+    return snap.request({
+        method: 'snap_dialog',
+        params: {
+            type: 'alert',
+            content: panel([
+                heading('Updated xtreamly slippage predictor'),
+                text('Head to following link for more info about the update:'),
+                copyable('https://info.xtreamly.io')
+            ]),
+        }
+    });
 }
