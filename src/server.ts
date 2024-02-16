@@ -19,7 +19,7 @@ export async function predictSlippage(tokenInAddress: string, tokenOutAddress: s
 
     const res = await rawRes.json()
     console.log(res)
-    return res['slippage']
+    return res['slippage_percentage']
 }
 
 
