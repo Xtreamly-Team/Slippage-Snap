@@ -1,6 +1,6 @@
 import { OnTransactionHandler, OnTransactionResponse } from '@metamask/snaps-types';
 import type { OnHomePageHandler, OnInstallHandler, OnUpdateHandler } from '@metamask/snaps-sdk';
-import { SupportedTokensETH, WETH_TOKEN_ETH, USDT_TOKEN_ETH } from './constants';
+import { SupportedTokensETH, WETH_TOKEN_ETH, USDT_TOKEN_ETH, getTradingSymbol } from './constants';
 
 import {
     copyable,
@@ -54,8 +54,10 @@ export const onTransaction: OnTransactionHandler = async ({
                     amountIn,
                     tokenIn?.decimals,
                     tokenOut?.decimals,
-                    tokenIn?.address == USDT_TOKEN_ETH.address,
-                    path1.fee)
+                    tokenIn?.address != WETH_TOKEN_ETH.address,
+                    path1.fee,
+                    getTradingSymbol(tokenIn!, tokenOut!),
+                )
             ])
 
             // NOTE: This is adjusted for the 0.15% that uniswap interface gets

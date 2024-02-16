@@ -43,6 +43,14 @@ export const USDT_TOKEN_ETH = new Token(
     'USDT'
 )
 
+export const USDC_TOKEN_ETH = new Token(
+    ChainId.MAINNET,
+    '0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48',
+    6,
+    'USDC',
+    'USDC'
+)
+
 export const SupportedTokensPolygon: Record<string, Token> = {
     '0x0d500b1d8e8ef31e21c99d1db9a6444d3adf1270': MATIC_TOKEN_POLYGON,
     '0xc2132d05d31c914a87c6611c10748aeb04b58e8f': USDT_TOKEN_POLYGON
@@ -50,5 +58,10 @@ export const SupportedTokensPolygon: Record<string, Token> = {
 
 export const SupportedTokensETH: Record<string, Token> = {
     '0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2': WETH_TOKEN_ETH,
-    '0xdac17f958d2ee523a2206206994597c13d831ec7': USDT_TOKEN_ETH
+    '0xdac17f958d2ee523a2206206994597c13d831ec7': USDT_TOKEN_ETH,
+    '0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48': USDC_TOKEN_ETH
+}
+
+export function getTradingSymbol(base: Token, quote: Token) {
+    return `${base.symbol}-${quote.symbol}`
 }
