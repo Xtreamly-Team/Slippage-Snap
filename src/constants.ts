@@ -45,7 +45,7 @@ export const USDT_TOKEN_ETH = new Token(
 
 export const USDC_TOKEN_ETH = new Token(
     ChainId.MAINNET,
-    '0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48',
+    '0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48',
     6,
     'USDC',
     'USDC'
@@ -59,7 +59,7 @@ export const SupportedTokensPolygon: Record<string, Token> = {
 export const SupportedTokensETH: Record<string, Token> = {
     '0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2': WETH_TOKEN_ETH,
     '0xdac17f958d2ee523a2206206994597c13d831ec7': USDT_TOKEN_ETH,
-    '0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48': USDC_TOKEN_ETH
+    '0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48': USDC_TOKEN_ETH
 }
 
 export const CEXEquivalentSymbols: Record<string, string> = {
