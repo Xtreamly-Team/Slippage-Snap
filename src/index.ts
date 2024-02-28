@@ -81,7 +81,7 @@ export const onTransaction: OnTransactionHandler = async ({
                     ...(insights.map((insight) => text(insight))),
                     panel([
                         heading('Slippage'),
-                        text(`Predicted: ${predictedSlippage.toFixed(2)}%`)
+                        text(`Predicted: ${predictedSlippage.toFixed(3)}%`)
                     ])
                 ])
             } as OnTransactionResponse;
