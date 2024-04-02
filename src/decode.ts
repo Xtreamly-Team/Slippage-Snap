@@ -1,7 +1,5 @@
-// TODO: Fix V2 decoding
 import { Interface, AbiCoder } from "ethers/lib/utils";
 import UniswapRouter from './UniswapRouter.json'
-
 
 export class SwapPath {
     constructor(
@@ -33,19 +31,19 @@ const swapCodes = {
     "09": "V2_SWAP_EXACT_OUT"
 };
 
-const v2VersionDictionary = {
-    "swapExactETHForTokens": ["V3_SWAP_EXACT_IN", "V2_SWAP_EXACT_IN"],
-    "swapETHForExactTokens": ["V3_SWAP_EXACT_OUT", "V2_SWAP_EXACT_OUT"]
-}
-
 const decoder = new Interface(UniswapRouter)
 
 export async function decodeTransaction(rawData: string) {
-    const decoded = decodeExecute(rawData)
-    return decoded
+    try {
+        const decoded = decodeExecute(rawData)
+        return decoded
+    } catch (error) {
+        throw Error('Error decoding the transaction')
+    }
 }
 
 
+// Decode execute command of Universal Router transactions
 function decodeExecute(transactionInput: string): DecodedUniswapTransaction | null {
     const parsedTx = decoder.parseTransaction({ data: transactionInput });
     const deadlineEpoch = parseInt(parsedTx.args[2])
@@ -86,7 +84,7 @@ function decodeExecute(transactionInput: string): DecodedUniswapTransaction | nu
                 true,
                 deadlineDate
             )
-        case "V3_SWAP_EXACT_OUT": //exactOutputSingle FNC 9
+        case "V3_SWAP_EXACT_OUT": 
             decoded = abiCoder.decode(["address", "uint256", "uint256", "bytes", "bool"], inputForFunction);
             decodedPath = extractPathAndFeesFromV3(decoded[3], true)
             return new DecodedUniswapTransaction(
@@ -99,30 +97,7 @@ function decodeExecute(transactionInput: string): DecodedUniswapTransaction | nu
                 false,
                 deadlineDate
             )
-        case "V2_SWAP_EXACT_IN":
-            decoded = abiCoder.decode(["address", "uint256", "uint256", "address[]", "bool"], inputForFunction);
-            return new DecodedUniswapTransaction(swapCodes[foundFunction],
-                decoded[0],
-                decoded[1].toString(),
-                decoded[2].toString(),
-                decoded[3],
-                decoded[4],
-                true,
-                deadlineDate
-            )
-        case "V2_SWAP_EXACT_OUT":
-            decoded = abiCoder.decode(["address", "uint256", "uint256", "address[]", "bool"], inputForFunction);
-            return new DecodedUniswapTransaction(swapCodes[foundFunction],
-                decoded[0],
-                decoded[2].toString(),
-                decoded[1].toString(),
-                decoded[3],
-                decoded[4],
-                false,
-                deadlineDate
-            )
         default:
-            console.info("No parseable execute function found in input.")
             return null;
     }
 }
@@ -157,47 +132,3 @@ function extractPathAndFeesFromV3(fullPath: string, reverse = false): SwapPath[]
     }
     return path;
 }
-
-// function buildTransactionObject(transactionDetails, decodedFunction) {
-//     let methodName;
-//     if (v2VersionDictionary["swapExactETHForTokens"].includes(decodedFunction.function)) {
-//         methodName = "swapExactETHForTokens";
-//     } else if (v2VersionDictionary["swapETHForExactTokens"].includes(decodedFunction.function)) {
-//         methodName = "swapETHForExactTokens";
-//     }
-//
-//     let contractCall = {
-//         "methodName": methodName,
-//         "params": {
-//             "amountIn": decodedFunction.amountIn,
-//             "amountOut": decodedFunction.amountOut,
-//             "path": decodedFunction.path,
-//             "deadline": "99999999999"
-//         }
-//     }
-//
-//
-//     if (methodName === undefined) {
-//         return undefined;
-//     }
-//
-//     return {
-//         'status': transactionDetails.status,
-//         'direction': transactionDetails.direction,
-//         'hash': transactionDetails.hash,
-//         'value': transactionDetails.value,
-//         'contractCall': JSON.stringify(contractCall),
-//         'counterparty': transactionDetails.counterparty,
-//         'estimatedBlocksUntilConfirmed': transactionDetails.estimatedBlocksUntilConfirmed,
-//         'dispatchTimestamp': transactionDetails.dispatchTimestamp,
-//         'maxFeePerGas': transactionDetails.maxFeePerGas,
-//         'maxPriorityFeePerGas': transactionDetails.maxPriorityFeePerGas,
-//         'gas': transactionDetails.gas,
-//         'from': transactionDetails.from,
-//         'type': transactionDetails.type,
-//         'gasPriceGwei': transactionDetails.gasPriceGwei,
-//         'gasPrice': transactionDetails.gasPriceGwei
-//     }
-// }
-//
-

@@ -1,43 +1,45 @@
-import { PredictSlippageAPIUrl, PublicTestAPIBetaKey, QuotePriceAPIUrl  } from "./constants"
+import { PredictSlippageAPIUrl, PublicTestAPIBetaKey, QuotePriceAPIUrl } from "./constants"
 
 export async function predictSlippage(tokenInAddress: string, tokenOutAddress: string, amountIn: number, decimalIn: number, decimalOut: number, isBuy: boolean, fee: number, symbol: string): Promise<number> {
 
-    const url = `${PredictSlippageAPIUrl}?tokenInAddress=${tokenInAddress}&tokenOutAddress=${tokenOutAddress}&amountIn=${amountIn}&decimalIn=${decimalIn}&decimalOut=${decimalOut}&fee=${fee}&isBuy=${isBuy}&symbol=${symbol}`
+    try {
+        const url = `${PredictSlippageAPIUrl}?tokenInAddress=${tokenInAddress}&tokenOutAddress=${tokenOutAddress}&amountIn=${amountIn}&decimalIn=${decimalIn}&decimalOut=${decimalOut}&fee=${fee}&isBuy=${isBuy}&symbol=${symbol}`
 
-    console.log('url')
-    console.log(url)
+        const rawRes = await fetch(
+            url,
+            {
+                method: 'GET',
+                headers: {
+                    "x-api-key": PublicTestAPIBetaKey,
+                },
+            }
+        )
 
-    const rawRes = await fetch(
-        url,
-        {
-            method: 'GET',
-            headers: {
-                "x-api-key": PublicTestAPIBetaKey,
-            },
-        }
-    )
-
-    const res = await rawRes.json()
-    console.log(res)
-    return res['slippage_percentage']
+        const res = await rawRes.json()
+        return res['slippage_percentage']
+    } catch (error) {
+        throw Error('Error communicating with the server')
+    }
 }
-
 
 export async function getQuote(tokenInAddress: string, tokenOutAddress: string, amountIn: number, decimalIn: number, decimalOut: number, fee: number) {
 
     const url = `${QuotePriceAPIUrl}?tokenInAddress=${tokenInAddress}&tokenOutAddress=${tokenOutAddress}&amountIn=${amountIn}&decimalIn=${decimalIn}&decimalOut=${decimalOut}&fee=${fee}`
 
-    const rawRes = await fetch(
-        url,
-        {
-            method: 'GET',
-            headers: {
-                "x-api-key": PublicTestAPIBetaKey,
-            },
-        }
-    )
+    try {
+        const rawRes = await fetch(
+            url,
+            {
+                method: 'GET',
+                headers: {
+                    "x-api-key": PublicTestAPIBetaKey,
+                },
+            }
+        )
 
-    const res = await rawRes.json()
-    console.log(res)
-    return res
+        const res = await rawRes.json()
+        return res
+    } catch (error) {
+        throw Error('Error communicating with the server')
+    }
 }
