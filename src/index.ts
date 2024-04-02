@@ -34,9 +34,19 @@ export const onTransaction: OnTransactionHandler = async ({
                 const firstPath: SwapPath = decoded.path[0]
                 const lastPath: SwapPath = decoded.path[decoded!.path.length - 1]
 
+                const tokenInAddress = firstPath.tokenIn
+                const tokenOutAddress = lastPath.tokenOut
+
+                if (SupportedTokensETH.hasOwnProperty(tokenInAddress.toLowerCase()) == false || SupportedTokensETH.hasOwnProperty(tokenOutAddress.toLowerCase()) == false) {
+                    return { content: errorPanel('One of the tokens is not supported') }
+                }
+
                 const tokenIn = SupportedTokensETH[firstPath.tokenIn.toLowerCase()]
 
                 const tokenOut = SupportedTokensETH[lastPath.tokenOut.toLowerCase()]
+
+                console.log(firstPath)
+                console.log(lastPath)
 
                 const amountIn = +decoded.amountIn / (10 ** tokenIn!.decimals)
 
@@ -91,9 +101,7 @@ export const onTransaction: OnTransactionHandler = async ({
             }
         }
         return {
-            content: panel([
-                heading('Transaction not supported')
-            ])
+            content: errorPanel('One of the tokens is not supported')
         } as OnTransactionResponse;
     } catch (error) {
         return {
