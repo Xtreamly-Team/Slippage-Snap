@@ -1,15 +1,3 @@
-// import { SnapBrowserifyConfig } from '@metamask/snaps-cli/dist/types/config';
-// const config: SnapBrowserifyConfig = {
-//   cliOptions: {
-//     src: './src/index.ts',
-//     port: 8080,
-//     transpilationMode: "localAndDeps"
-//   },
-// }
-//
-//
-// export default config;
-
 import type { SnapConfig } from '@metamask/snaps-cli';
 import { merge } from '@metamask/snaps-cli';
 import { resolve } from 'path';
