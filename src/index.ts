@@ -45,9 +45,6 @@ export const onTransaction: OnTransactionHandler = async ({
 
                 const tokenOut = SupportedTokensETH[lastPath.tokenOut.toLowerCase()]
 
-                console.log(firstPath)
-                console.log(lastPath)
-
                 const amountIn = +decoded.amountIn / (10 ** tokenIn!.decimals)
 
                 const minOut = +decoded.minAmountOut / (10 ** tokenOut!.decimals)
