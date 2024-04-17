@@ -1,6 +1,7 @@
 import { PredictSlippageAPIUrl, PublicTestAPIBetaKey, QuotePriceAPIUrl } from "./constants"
+import { SwapPath } from "./decode"
 
-export async function predictSlippage(tokenInAddress: string, tokenOutAddress: string, amountIn: number, decimalIn: number, decimalOut: number, isBuy: boolean, fee: number, symbol: string): Promise<number> {
+export async function predictSlippage(tokenInAddress: string, tokenOutAddress: string, amountIn: number, decimalIn: number, decimalOut: number, isBuy: boolean, fee: number, symbol: string, paths: SwapPath[]): Promise<number> {
 
     try {
         const url = `${PredictSlippageAPIUrl}?tokenInAddress=${tokenInAddress}&tokenOutAddress=${tokenOutAddress}&amountIn=${amountIn}&decimalIn=${decimalIn}&decimalOut=${decimalOut}&fee=${fee}&isBuy=${isBuy}&symbol=${symbol}`
@@ -8,10 +9,11 @@ export async function predictSlippage(tokenInAddress: string, tokenOutAddress: s
         const rawRes = await fetch(
             url,
             {
-                method: 'GET',
+                method: 'POST',
                 headers: {
                     "x-api-key": PublicTestAPIBetaKey,
                 },
+                body: JSON.stringify({paths: paths})
             }
         )
 

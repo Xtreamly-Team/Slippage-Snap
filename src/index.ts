@@ -67,6 +67,7 @@ export const onTransaction: OnTransactionHandler = async ({
                         tokenIn?.address != WETH_TOKEN_ETH.address,
                         firstPath.fee,
                         getTradingSymbol(tokenIn!, tokenOut!),
+                        decoded.path
                     )
                 ])
 
