@@ -10,7 +10,7 @@ import {
     text,
 } from "@metamask/snaps-sdk";
 import { decodeTransaction, SwapPath } from './decode';
-import { getQuote, predictSlippage } from './server';
+import { getQuote, getVolatilityForIntervals, predictSlippage } from './server';
 
 const errorPanel = (error: string) => panel([
     heading('Unfortunately an error occured'),
@@ -77,6 +77,7 @@ export const onTransaction: OnTransactionHandler = async ({
                 const slippageTolerance = Math.round(((quotedPriceAdjusted - minOut) / quotedPriceAdjusted) * 100)
 
 
+
                 insights = [
                     `Amount In: ${amountIn} ${tokenIn!.name}`,
                     `Quoted: ${quotedPriceAdjusted.toFixed(4)} ${tokenOut!.name}`,
@@ -86,6 +87,18 @@ export const onTransaction: OnTransactionHandler = async ({
                     `Pool: ${poolAddress}`,
                     `Deadline: ${decoded.deadline}`,
                 ]
+
+                const currentSecondsEpoch = Math.floor(Date.now() / 1000)
+                const lastHourEpoch = currentSecondsEpoch - 3600
+                const volatilities = await getVolatilityForIntervals([lastHourEpoch, currentSecondsEpoch])
+
+                const volatility = volatilities[0]
+                const poolVolatility = volatility?.poolVolatilities.filter((poolVolatility) => poolVolatility.poolAddress.toLowerCase() === `${poolAddress}`.toLowerCase())[0]
+
+                if (poolVolatility) {
+                    insights.push(`Pool Volatility (Standard Deviation): ${poolVolatility.volatility.toFixed(2)}`)
+                }
+
                 return {
                     content: panel([
                         heading('Transaction Insights'),
