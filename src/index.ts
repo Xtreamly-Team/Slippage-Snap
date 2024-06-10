@@ -10,7 +10,7 @@ import {
     text,
 } from "@metamask/snaps-sdk";
 import { decodeTransaction, SwapPath } from './decode';
-import { getQuote, getVolatilityForIntervals, predictSlippage } from './server';
+import { getQuote, getVolatilityForIntervals, predictIndicators } from './server';
 
 const errorPanel = (error: string) => panel([
     heading('Unfortunately an error occured'),
@@ -22,6 +22,7 @@ export const onTransaction: OnTransactionHandler = async ({
     chainId,
 }) => {
     try {
+        console.log("AAAAAAAAAAAAAAASDASDASD")
         let insights: string[] = []
         if (
             // Currently we only support swaps on Ethereum mainnet
@@ -49,7 +50,7 @@ export const onTransaction: OnTransactionHandler = async ({
 
                 const minOut = +decoded.minAmountOut / (10 ** tokenOut!.decimals)
 
-                const [{ quotedPrice, poolAddress, _ }, predictedSlippage] = await Promise.all([
+                const [{ quotedPrice, poolAddress, _ }, aiPredictionRes] = await Promise.all([
                     getQuote(
                         tokenIn?.address,
                         tokenOut?.address,
@@ -57,7 +58,7 @@ export const onTransaction: OnTransactionHandler = async ({
                         tokenIn?.decimals,
                         tokenOut?.decimals,
                         firstPath?.fee),
-                    predictSlippage(
+                    predictIndicators(
                         tokenIn?.address,
                         tokenOut?.address,
                         amountIn,
@@ -99,14 +100,18 @@ export const onTransaction: OnTransactionHandler = async ({
                     insights.push(`Pool Volatility (Standard Deviation): ${poolVolatility.volatility.toFixed(2)}`)
                 }
 
+                console.log("Predictions:")
+                console.log(aiPredictionRes)
+
                 return {
                     content: panel([
                         heading('Transaction Insights'),
                         ...(insights.map((insight) => text(insight))),
                         panel([
-                            heading('Slippage'),
-                            text(`Predicted: ${predictedSlippage.toFixed(3)}%`)
-                        ])
+                            heading('Predictions'),
+                            text(`Slippage: ${aiPredictionRes.slippage.toFixed(3)}%`),
+                            text(`Volatility (Next 24Hrs): ${aiPredictionRes.volatility}%`)
+                        ]),
                     ])
                 } as OnTransactionResponse;
             }

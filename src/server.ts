@@ -2,8 +2,7 @@ import { PredictSlippageAPIUrl, PublicTestAPIBetaKey, QuotePriceAPIUrl } from ".
 import { SwapPath } from "./decode"
 import { PoolVolatilitiesSnapshot } from "./models"
 
-export async function predictSlippage(tokenInAddress: string, tokenOutAddress: string, amountIn: number, decimalIn: number, decimalOut: number, isBuy: boolean, fee: number, symbol: string, paths: SwapPath[]): Promise<number> {
-
+export async function predictIndicators(tokenInAddress: string, tokenOutAddress: string, amountIn: number, decimalIn: number, decimalOut: number, isBuy: boolean, fee: number, symbol: string, paths: SwapPath[]): Promise<any> {
     try {
         const url = `${PredictSlippageAPIUrl}?tokenInAddress=${tokenInAddress}&tokenOutAddress=${tokenOutAddress}&amountIn=${amountIn}&decimalIn=${decimalIn}&decimalOut=${decimalOut}&fee=${fee}&isBuy=${isBuy}&symbol=${symbol}`
 
@@ -19,6 +18,11 @@ export async function predictSlippage(tokenInAddress: string, tokenOutAddress: s
         )
 
         const res = await rawRes.json()
+        console.log(res)
+        return {
+            slippage: res['slippage'],
+            volatility: res['volatility']
+        }
         return res['slippage_percentage']
     } catch (error) {
         throw Error('Error communicating with the server')
