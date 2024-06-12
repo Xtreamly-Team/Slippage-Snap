@@ -110,13 +110,14 @@ export const onTransaction: OnTransactionHandler = async ({
                         panel([
                             heading('Predictions'),
                             text(`Slippage: ${aiPredictionRes.slippage.toFixed(3)}%`),
-                            text(`Volatility (Next 24Hrs): ${aiPredictionRes.volatility}%`),
-                            text(`Price (Next 15 Min): ${aiPredictionRes.price}%`)
+                            text(`Volatility (Next 24 Hrs): ${Number(aiPredictionRes.volatility).toFixed(3)}`),
+                            text(`Price (Next 15 Min): ${Number(aiPredictionRes.price).toFixed(3)}`),
                         ]),
                     ])
                 } as OnTransactionResponse;
             }
         }
+
         return {
             content: errorPanel('One of the tokens is not supported')
         } as OnTransactionResponse;
