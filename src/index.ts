@@ -110,7 +110,8 @@ export const onTransaction: OnTransactionHandler = async ({
                         panel([
                             heading('Predictions'),
                             text(`Slippage: ${aiPredictionRes.slippage.toFixed(3)}%`),
-                            text(`Volatility (Next 24Hrs): ${aiPredictionRes.volatility}%`)
+                            text(`Volatility (Next 24Hrs): ${aiPredictionRes.volatility}%`),
+                            text(`Price (Next 15 Min): ${aiPredictionRes.price}%`)
                         ]),
                     ])
                 } as OnTransactionResponse;

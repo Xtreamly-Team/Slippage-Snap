@@ -21,7 +21,8 @@ export async function predictIndicators(tokenInAddress: string, tokenOutAddress:
         console.log(res)
         return {
             slippage: res['slippage'],
-            volatility: res['volatility']
+            volatility: res['volatility'],
+            price: res['price']
         }
         return res['slippage_percentage']
     } catch (error) {
