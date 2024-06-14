@@ -22,7 +22,6 @@ export const onTransaction: OnTransactionHandler = async ({
     chainId,
 }) => {
     try {
-        console.log("AAAAAAAAAAAAAAASDASDASD")
         let insights: string[] = []
         if (
             // Currently we only support swaps on Ethereum mainnet
@@ -99,9 +98,6 @@ export const onTransaction: OnTransactionHandler = async ({
                 if (poolVolatility) {
                     insights.push(`Pool Volatility (Standard Deviation): ${poolVolatility.volatility.toFixed(2)}`)
                 }
-
-                console.log("Predictions:")
-                console.log(aiPredictionRes)
 
                 return {
                     content: panel([

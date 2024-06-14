@@ -18,7 +18,6 @@ export async function predictIndicators(tokenInAddress: string, tokenOutAddress:
         )
 
         const res = await rawRes.json()
-        console.log(res)
         return {
             slippage: res['slippage'],
             volatility: res['volatility'],
@@ -59,7 +58,6 @@ const API_URL = `${SERVER_HOST}/api/v1`;
 export async function getVolatilityForIntervals(intervals: number[]): Promise<PoolVolatilitiesSnapshot[]> {
     let volatilitySnapshots: PoolVolatilitiesSnapshot[] = [];
     let requestUrl = `${API_URL}/Volatility/GetVolatilityForAllPools`
-    console.log(intervals)
     for (let i = 0; i < intervals.length - 1; i++) {
         const response = await fetch(`${requestUrl}?start=${intervals[i]}&end=${intervals[i+1]}`,
         );
